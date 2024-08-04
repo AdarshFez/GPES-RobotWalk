@@ -1,0 +1,124 @@
+let InputArray1 = [1, 2, 4, 1, 5];
+let InputArray2 = [1, 2, 4];
+
+// Test Case 1
+const result = robotWalk(InputArray1);
+console.log("Final Result Case 1");
+console.log(result);
+console.log("Test Case 1 " + (result[0] === 1 && result[1] === 1 ? "Passed" : "Failed"));
+
+// Test Case 2
+const result2 = robotWalk(InputArray2);
+console.log("Final Result Case 2");
+console.log(result2);
+console.log("Test Case 2 " + (result2[0] === 2 && result2[1] === -3 ? "Passed" : "Failed"));
+
+
+function robotWalk(x) {
+	// track Direction
+	let Direction = 1;
+
+	// track robot position
+	let PositionJson = { MaxLeft: 0, MaxRight: 0, MaxUp: 0, MaxDown: 0, IsAllowedToMove: true, NumberOfLeftCommands: 0, NumberOfRightCommands: 0, NumberOfUpCommands: 0, NumberOfDownCommands: 0 };
+    // Initial position at 0,0
+	let CurrentPosition = [0, 0];
+
+	let result = x.forEach(robotArrayHandler);    
+
+	function robotArrayHandler(steps) {
+		// New position json
+		let ProposedPosition = {};
+        if(PositionJson.IsAllowedToMove){
+            if (Direction === 1) {                
+                // Up                
+                ProposedPosition.x = CurrentPosition[0];
+                ProposedPosition.y = CurrentPosition[1] + steps; 
+
+                // Validate step
+                if ( ProposedPosition.y < PositionJson.MaxUp || ( ProposedPosition.y > PositionJson.MaxUp && (ProposedPosition.x < PositionJson.MaxLeft || PositionJson.MaxRight < ProposedPosition.x)) || PositionJson.NumberOfUpCommands === 0) {
+                    // Step is Valid, update robot position
+                    CurrentPosition[1] = ProposedPosition.y;
+                    PositionJson.MaxUp = Math.max(PositionJson.MaxUp, CurrentPosition[1]);
+                    Direction = 2;
+                    PositionJson.NumberOfUpCommands += 1;
+
+                } else {
+                    // Invalid step, Robot walked on itelf, set robot position to max up
+                    CurrentPosition[1] = PositionJson.MaxUp;
+                    PositionJson.IsAllowedToMove = false;
+                    return CurrentPosition;
+                }
+
+                
+            } else if (Direction === 2) {
+                // Right
+                ProposedPosition.x = CurrentPosition[0] + steps;
+                ProposedPosition.y = CurrentPosition[1];
+
+                // Validate step
+                if ( ProposedPosition.x < PositionJson.MaxRight || ( ProposedPosition.x > PositionJson.MaxRight && (ProposedPosition.y < PositionJson.MaxDown || PositionJson.MaxUp < ProposedPosition.y)) || PositionJson.NumberOfRightCommands === 0) {
+                    // Step is Valid, update robot position
+                    CurrentPosition[0] = ProposedPosition.x;
+                    PositionJson.MaxRight = Math.max(
+                        PositionJson.MaxRight,
+                        CurrentPosition[0]
+                    );
+                    PositionJson.NumberOfRightCommands += 1;
+                    Direction = 3;
+                } else {
+                    // Invalid step, Robot walked on itelf, set robot position to max up
+                    CurrentPosition[0] = PositionJson.MaxRight;
+                    PositionJson.IsAllowedToMove = false;
+                    return CurrentPosition;
+                }
+
+                
+            } else if (Direction === 3) {
+                // Down
+                ProposedPosition.x = CurrentPosition[0];
+                ProposedPosition.y = CurrentPosition[1] - steps;
+
+                // Validate step
+                if ( ProposedPosition.y > PositionJson.MaxDown || ( ProposedPosition.y < PositionJson.MaxDown && (ProposedPosition.x < PositionJson.MaxLeft || PositionJson.MaxRight < ProposedPosition.x)) || PositionJson.NumberOfDownCommands === 0) {
+                    // Step is Valid, update robot position
+                    CurrentPosition[1] = ProposedPosition.y;
+                    PositionJson.MaxDown = Math.min(
+                        PositionJson.MaxDown,
+                        CurrentPosition[1]
+                    );
+                    PositionJson.NumberOfDownCommands += 1;
+                    Direction = 4;
+                } else {
+                    // Invalid step, Robot walked on itelf, set robot position to max up and return
+                    CurrentPosition[1] = PositionJson.MaxDown;
+                    PositionJson.IsAllowedToMove = false;
+                    return CurrentPosition;
+                }
+
+            } else if (Direction === 4) {
+                // Left
+                ProposedPosition.x = CurrentPosition[0] - steps;
+                ProposedPosition.y = CurrentPosition[1];
+
+                // Validate step
+                if ( ProposedPosition.x > PositionJson.MaxLeft || ( ProposedPosition.x < PositionJson.MaxLeft && (ProposedPosition.y < PositionJson.MaxDown || PositionJson.MaxUp < ProposedPosition.y)) || PositionJson.NumberOfLeftCommands === 0) {
+                    // Step is Valid, update robot position
+                    CurrentPosition[0] = ProposedPosition.x;
+                    PositionJson.MaxLeft = Math.min(
+                        PositionJson.MaxLeft,
+                        CurrentPosition[0]
+                    );
+                    PositionJson.NumberOfLeftCommands += 1;
+                    Direction = 1;
+                } else {
+                    // Invalid step, Robot walked on itelf, set robot position to max up and return
+                    CurrentPosition[0] = PositionJson.MaxLeft;
+                    PositionJson.IsAllowedToMove = false;
+                    return CurrentPosition;
+                }
+            }
+        }
+	}
+
+	return CurrentPosition;
+}
