@@ -1,13 +1,13 @@
-let InputArray1 = [1, 2, 4, 1, 5];
-let InputArray2 = [1, 2, 4];
 
 // Test Case 1
+let InputArray1 = [1, 2, 4, 1, 5];
 const result = robotWalk(InputArray1);
 console.log("Final Result Case 1");
 console.log(result);
 console.log("Test Case 1 " + (result[0] === 1 && result[1] === 1 ? "Passed" : "Failed"));
 
 // Test Case 2
+let InputArray2 = [1, 2, 4];
 const result2 = robotWalk(InputArray2);
 console.log("Final Result Case 2");
 console.log(result2);
@@ -23,9 +23,9 @@ function robotWalk(x) {
     // Initial position at 0,0
 	let CurrentPosition = [0, 0];
 
-	let result = x.forEach(robotArrayHandler);    
+	let result = x.forEach(RobotsMovementHandler);    
 
-	function robotArrayHandler(steps) {
+	function RobotsMovementHandler(steps) {
 		// New position json
 		let ProposedPosition = {};
         if(PositionJson.IsAllowedToMove){
@@ -43,7 +43,7 @@ function robotWalk(x) {
                     PositionJson.NumberOfUpCommands += 1;
 
                 } else {
-                    // Invalid step, Robot walked on itelf, set robot position to max up
+                    // Invalid step, Robot walked on itself, set robot position to max up
                     CurrentPosition[1] = PositionJson.MaxUp;
                     PositionJson.IsAllowedToMove = false;
                     return CurrentPosition;
@@ -66,7 +66,7 @@ function robotWalk(x) {
                     PositionJson.NumberOfRightCommands += 1;
                     Direction = 3;
                 } else {
-                    // Invalid step, Robot walked on itelf, set robot position to max up
+                    // Invalid step, Robot walked on itself, set robot position to max up
                     CurrentPosition[0] = PositionJson.MaxRight;
                     PositionJson.IsAllowedToMove = false;
                     return CurrentPosition;
@@ -89,7 +89,7 @@ function robotWalk(x) {
                     PositionJson.NumberOfDownCommands += 1;
                     Direction = 4;
                 } else {
-                    // Invalid step, Robot walked on itelf, set robot position to max up and return
+                    // Invalid step, Robot walked on itself, set robot position to max up
                     CurrentPosition[1] = PositionJson.MaxDown;
                     PositionJson.IsAllowedToMove = false;
                     return CurrentPosition;
@@ -111,7 +111,7 @@ function robotWalk(x) {
                     PositionJson.NumberOfLeftCommands += 1;
                     Direction = 1;
                 } else {
-                    // Invalid step, Robot walked on itelf, set robot position to max up and return
+                    // Invalid step, Robot walked on itself, set robot position to max up
                     CurrentPosition[0] = PositionJson.MaxLeft;
                     PositionJson.IsAllowedToMove = false;
                     return CurrentPosition;
